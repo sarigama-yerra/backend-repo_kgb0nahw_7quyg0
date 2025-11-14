@@ -12,7 +12,8 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
+from datetime import date
 
 # Example schemas (replace with your own):
 
@@ -38,8 +39,25 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
+# Fitness App Schemas
 # --------------------------------------------------
+class ExerciseItem(BaseModel):
+    name: str = Field(..., description="Exercise name, e.g., Bench Press")
+    sets: Optional[int] = Field(None, ge=0, description="Number of sets")
+    reps: Optional[int] = Field(None, ge=0, description="Reps per set")
+    weight: Optional[float] = Field(None, ge=0, description="Weight in kg or lbs")
+    duration: Optional[int] = Field(None, ge=0, description="Duration in minutes for cardio")
+    notes: Optional[str] = Field(None, description="Any notes for this exercise")
+
+class Workout(BaseModel):
+    """
+    Workouts collection schema
+    Collection name: "workout"
+    """
+    title: str = Field(..., description="Workout plan title")
+    workout_date: Optional[date] = Field(None, description="Date of the workout")
+    notes: Optional[str] = Field(None, description="General notes for the workout")
+    exercises: List[ExerciseItem] = Field(default_factory=list, description="List of exercises in this workout")
 
 # Note: The Flames database viewer will automatically:
 # 1. Read these schemas from GET /schema endpoint
